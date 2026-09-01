@@ -70,7 +70,7 @@ function App() {
           <a href="#approach" onClick={() => setMenuOpen(false)}>TRANG CHỦ</a>
           <div className="hotline-link">
             <a href="#stories" onClick={() => setMenuOpen(false)}>LIÊN HỆ TỔNG ĐÀI:</a>
-            <strong>1900 63 67 69</strong>
+            <strong>1900 63 67 68</strong>
           </div>
           <button className="mobile-login" onClick={() => { setShowLogin(true); setMenuOpen(false) }}>ĐĂNG NHẬP<ArrowUpRight size={15} /></button>
         </div>
