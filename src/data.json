@@ -2,44 +2,47 @@
   "features": [
     {
       "number": "01",
-      "title": "See the signal",
-      "text": "Turn scattered information into a calm, clear picture of what matters next."
+      "title": "Khách hàng gửi yêu cầu tư vấn tới Mcis (qua Hotline hoặc Website)",
+      "text": ""
     },
     {
       "number": "02",
-      "title": "Move with intent",
-      "text": "Build momentum with thoughtful prompts that meet you exactly where you are."
+      "title": "Mcis liên hệ tư vấn trực tiếp với khách hàng về thủ tục đăng ký và hoàn tất hồ sơ.",
+      "text": ""
     },
     {
       "number": "03",
-      "title": "Keep your north",
-      "text": "Come back to the decisions, ideas, and people that make the work meaningful."
+      "title": "Mris thẩm định, phê duyệt hồ sơ và thực hiện giải ngân cho khách hàng.",
+      "text": ""
     }
   ],
   "heroSlides": [
     {
-      "eyebrow": "A more considered way forward",
-      "title": "Make space",
-      "emphasis": "for what's next.",
-      "description": "Northstar brings your thoughts, plans, and possibilities into focus, so you can spend less time navigating the noise and more time making meaningful progress.",
-      "caption": "A clearer view",
-      "artClass": "sunrise-art"
+      "eyebrow": "Vay qua app",
+      "title": "Vay tiền nhanh",
+      "emphasis": "",
+      "description": "Kẹt tiền không muốn ai lo? Mcris lo cùng bạn.",
+      "caption": "",
+      "artClass": "sunrise-art",
+      "image": "/images/slide1.jpg"
     },
     {
-      "eyebrow": "Turn ideas into momentum",
-      "title": "Move with",
-      "emphasis": "intention.",
-      "description": "Shape the next step with thoughtful prompts that help you turn a quiet idea into meaningful progress.",
+      "eyebrow": "Ưu đã xanh",
+      "title": "Chương trình ưu đãi giảm lãi cho khách hàng",
+      "emphasis": " có tài khoản ngân hàng MBank",
+      "description": "Thực hiện giao dịch từ 30k.",
       "caption": "Find your rhythm",
-      "artClass": "morning-art"
+      "artClass": "morning-art",
+      "image": "/images/slide2.jpg"
     },
     {
-      "eyebrow": "Keep your north close",
-      "title": "Come back",
-      "emphasis": "to what matters.",
-      "description": "Gather the decisions, people, and possibilities that make the work feel clear, grounded, and yours.",
-      "caption": "Stay oriented",
-      "artClass": "evening-art"
+      "eyebrow": "Ưu đãi khách hàng có tài khoản Mbank",
+      "title": "An tâm góp nhẹ",
+      "emphasis": "thoải mái đi",
+      "description": "",
+      "caption": "",
+      "artClass": "evening-art",
+      "image": "/images/slide3.jpg"
     }
   ],
   "imageOptions": [

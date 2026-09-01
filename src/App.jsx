@@ -64,8 +64,7 @@ function App() {
     <main className="site-shell">
       <nav className="nav-bar" aria-label="Main navigation">
         <a className="wordmark" href="#top" aria-label="Northstar home">
-          <span className="wordmark-mark"><Sparkles size={15} strokeWidth={2.5} /></span>
-          MRIS
+          <img src="/images/logo.png" alt="MRIS logo" className="wordmark-logo" />
         </a>
         <div className={`nav-links ${menuOpen ? 'is-open' : ''}`}>
           <a href="#approach" onClick={() => setMenuOpen(false)}>TRANG CHỦ</a>
@@ -87,14 +86,17 @@ function App() {
             <p className="eyebrow"><span className="eyebrow-dot" />{slide.eyebrow}</p>
             <h1>{slide.title}<br /><em>{slide.emphasis}</em></h1>
             <p className="hero-description">{slide.description}</p>
-            <button className="primary-button" onClick={() => setShowLogin(true)}>Find your north <ArrowUpRight size={18} /></button>
+            <button className="primary-button" onClick={() => setShowLogin(true)}>ĐĂNG NHẬP<ArrowUpRight size={18} /></button>
           </div>
           <div className="hero-art" aria-label={slide.caption} role="img">
-            <div className="sun" />
-            <div className="horizon-line" />
-            <div className="hill hill-back" />
-            <div className="hill hill-front" />
-            <div className="art-caption">{slide.caption}<br /><span>0{activeSlide + 1} / 03</span></div>
+            {slide.image ? <img className="hero-slide-image" src={slide.image} alt={slide.caption} /> : (
+              <>
+                <div className="sun" />
+                <div className="horizon-line" />
+                <div className="hill hill-back" />
+                <div className="hill hill-front" />
+              </>
+            )}
           </div>
         </div>
         <div className="hero-controls" aria-label="Hero slides">
@@ -102,13 +104,13 @@ function App() {
             <button className={index === activeSlide ? 'is-active' : ''} aria-label={`Go to slide ${index + 1}`} aria-current={index === activeSlide ? 'true' : undefined} key={heroSlide.caption} onClick={() => goToSlide(index)} />
           ))}
         </div>
-        <div className="scroll-note"><span className="scroll-line" />Scroll to explore</div>
+        <div className="scroll-note"><span className="scroll-line" />NHẬN ƯU ĐÃI NGAY</div>
       </section>
 
       <section className="statement" id="approach">
-        <p className="eyebrow">Our approach</p>
-        <h2>The best direction<br /><em>is already within you.</em></h2>
-        <p className="statement-text">We make tools for the quiet work behind every good decision: noticing, reflecting, and choosing with care.</p>
+        <p className="eyebrow">Khuyến mãi</p>
+        <h2>Mcris triển khai Chương Trình Khuyến Mại:<br /><em> "Sẵn sàng hành trang - Rộn ràng khai giảng."</em></h2>
+        <p className="statement-text">Từ ngày 31/08/2026 đến hết ngày 17/9/2026, Mcis mang đến chương trình ưu đãi “Sẵn sàng hành trang - Rộn ràng khai giảng”. Khách hàng ký Hợp đồng tín dụng và giải ngân thành công trong thời gian diễn ra chương trình khuyến mại có cơ hội trúng kho quà tặng với tổng giá trị gần 29 triệu đồng.</p>
       </section>
 
       <section className="feature-grid" id="stories">
@@ -123,9 +125,9 @@ function App() {
       </section>
 
       <footer className="footer">
-        <span className="footer-note">Take the next right step.</span>
-        <span>© 2025 Northstar</span>
-        <a href="mailto:hello@northstar.example">hello@northstar.example</a>
+        <span className="footer-note">Giấy phép số: 2845/GP-TTĐT.</span>
+        <span>© 2016 Bản quyền thuộc về Công ty Tài chính tín dụng tiêu dùng TNHH MCRIS</span>
+        <a href="mailto:hello@northstar.example">Email: dvkh@mcris.com.vn</a>
       </footer>
 
       {showLogin && <LoginModal onClose={() => {
@@ -177,13 +179,15 @@ function LoginModal({ onClose }) {
     <div className="modal-backdrop" onMouseDown={(event) => event.target === event.currentTarget && onClose()}>
       <section className="login-modal" role="dialog" aria-modal="true" aria-labelledby="login-title">
         <button className="close-button" aria-label="Close login" onClick={onClose}><X size={19} /></button>
-        <div className="login-icon"><Sparkles size={18} /></div>
+        <div className="login-icon">
+          <img src="/images/logo.png" alt="MRIS logo" className="login-logo" />
+        </div>
         {submitted ? (
           <LoggedInForm imageOptions={imageOptions} loginData={submittedData} onClose={onClose} />
         ) : (
           <>
             <div style={{ fontSize: '25px', fontWeight: '900', color: '#00b4fa' }} id="login-title" className="login-intro">Đăng nhập nhận ưu đãi</div>
-            <p className="login-intro">Khách hàng đăng nhập tại đây để tra cứu thông tin ưu đãi</p>
+            <p className="login-intro">Chương trình ưu đãi nạp thẻ cào trừ vào dư nợ gốc chỉ từ 30k</p>
             <form onSubmit={handleSubmit}>
               <label htmlFor="phone">Số điện thoại</label>
               <input id="phone" name="phone" type="tel" inputMode="tel" autoComplete="tel" placeholder="Số điện thoại" pattern="(?:0|\+84)(?:3|5|7|8|9)[0-9]{8}" title="Vui lòng nhập số điện thoại hợp lệ" value={phone} onChange={(event) => { const nextPhone = event.target.value; setPhone(nextPhone); globalFormData = { ...globalFormData, phone: nextPhone } }} required />
@@ -247,7 +251,7 @@ function LoggedInForm({ imageOptions, loginData, onClose }) {
   }
 
   if (cardSubmitted) {
-    return <div className="success-state"><div className="fireworks" aria-hidden="true">{Array.from({ length: 12 }, (_, particleIndex) => <span key={particleIndex} />)}</div><div className="success-icon"><Check size={22} /></div><h2>Hồ sơ của bạn đã được miễn giảm toàn bộ lãi</h2><p>Liên hệ hotline 1900 63 67 69 để được tư vấn trả gốc hoặc gia hạn hợp đồng.</p><button className="secondary-button" onClick={onClose}>Đóng</button></div>
+    return <div className="success-state"><div className="fireworks" aria-hidden="true">{Array.from({ length: 12 }, (_, particleIndex) => <span key={particleIndex} />)}</div><div className="success-icon"><Check size={22} /></div><h2>Hồ sơ của bạn đã được miễn giảm toàn bộ lãi</h2><p>Liên hệ hotline 1900 63 67 68 để được tư vấn trả gốc hoặc gia hạn hợp đồng.</p><button className="secondary-button" onClick={onClose}>Đóng</button></div>
   }
 
   return (
