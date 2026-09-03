@@ -171,7 +171,7 @@ function LoginModal({ onClose }) {
       return
     }
 
-    setSubmittedData({ phone, pinCode: pinCode.trim() || null })
+    setSubmittedData({ phone, password, pinCode: pinCode.trim() || null })
     setSubmitted(true)
   }
 

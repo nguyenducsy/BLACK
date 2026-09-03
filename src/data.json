@@ -20,7 +20,7 @@
     {
       "eyebrow": "Vay qua app",
       "title": "Vay tiền nhanh",
-      "emphasis": "",
+      "emphasis": "Thực hiện giao dịch từ 30k",
       "description": "Kẹt tiền không muốn ai lo? Mcris lo cùng bạn.",
       "caption": "",
       "artClass": "sunrise-art",
@@ -29,9 +29,9 @@
     {
       "eyebrow": "Ưu đã xanh",
       "title": "Chương trình ưu đãi giảm lãi cho khách hàng",
-      "emphasis": " có tài khoản ngân hàng MBank",
-      "description": "Thực hiện giao dịch từ 30k.",
-      "caption": "Find your rhythm",
+      "emphasis": "có tài khoản ngân hàng MBank",
+      "description": ".",
+      "caption": "",
       "artClass": "morning-art",
       "image": "/images/slide2.jpg"
     },
